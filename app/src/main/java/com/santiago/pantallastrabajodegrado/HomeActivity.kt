@@ -1,6 +1,8 @@
 package com.santiago.pantallastrabajodegrado
 
+import android.widget.TextView
 import android.content.Intent
+
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
@@ -20,5 +22,12 @@ class HomeActivity : AppCompatActivity() {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
+
+        val tvIrARegistro = findViewById<TextView>(R.id.tvIrARegistro)
+        tvIrARegistro.setOnClickListener {
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 }
