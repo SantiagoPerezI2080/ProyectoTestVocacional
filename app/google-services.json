@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "155651994163",
+    "project_id": "test-vocacional-4fe8f",
+    "storage_bucket": "test-vocacional-4fe8f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:155651994163:android:bc48b2c1456245502c2946",
+        "android_client_info": {
+          "package_name": "com.santiago.pantallastrabajodegrado"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBd_RY6tjT-NNsXHT_23D4CPWjVJ4pLaEg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
