@@ -149,7 +149,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ems="10"
-                        android:inputType="number"
+                        android:inputType="textPassword"
                         android:padding="15dp"
                         android:hint="Contraseña"
                         android:textColorHint="@color/editText" />

@@ -10,18 +10,21 @@
     android:background="@drawable/gradient_azul">
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingTop="24dp">
 
             <ImageView
-                android:scaleType="centerCrop"
                 android:id="@+id/imageView2"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="220dp"
+                android:scaleType="fitCenter"
                 app:srcCompat="@drawable/img_login" />
 
             <TextView
@@ -29,111 +32,119 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="10dp"
+                android:padding="12dp"
                 android:text="INICIA SESIÓN"
                 android:textColor="@color/white"
                 android:textSize="24sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"/>
 
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp">
 
-                <LinearLayout
-                    android:layout_margin="20dp"
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:text="Email"/>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/white"
-                        android:text="Email"/>
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="8dp" />
 
-                    <Space
-                        android:layout_width="match_parent"
-                        android:layout_height="5dp" />
+                <EditText
+                    android:textSize="16sp"
+                    android:background="@drawable/edit_text"
+                    android:id="@+id/etEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textEmailAddress"
+                    android:padding="16dp"
+                    android:hint="Correo electrónico"
+                    android:textColorHint="@color/editText" />
 
-                    <EditText
-                        android:textSize="16sp"
-                        android:background="@drawable/edit_text"
-                        android:id="@+id/etNombre"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:inputType="text"
-                        android:padding="15dp"
-                        android:hint="Correo electronico"
-                        android:textColorHint="@color/editText" />
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="16dp" />
 
-                    <Space
-                        android:layout_width="match_parent"
-                        android:layout_height="10dp" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:text="Contraseña"/>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/white"
-                        android:text="Contraseña"/>
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="8dp" />
 
-                    <Space
-                        android:layout_width="match_parent"
-                        android:layout_height="5dp" />
+                <EditText
+                    android:textSize="16sp"
+                    android:background="@drawable/edit_text"
+                    android:id="@+id/etContrasena"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPassword"
+                    android:padding="16dp"
+                    android:hint="Contraseña"
+                    android:textColorHint="@color/editText" />
 
-                    <EditText
-                        android:textSize="16sp"
-                        android:background="@drawable/edit_text"
-                        android:id="@+id/etEmail"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:inputType="textEmailAddress"
-                        android:padding="15dp"
-                        android:hint="Contraseña"
-                        android:textColorHint="@color/editText" />
+                <TextView
+                    android:id="@+id/tvOlvidoContrasena"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="¿Olvidó su contraseña?"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:layout_gravity="end" />
 
-                    <Space
-                        android:layout_width="match_parent"
-                        android:layout_height="150dp" />
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="24dp" />
 
 
-                    <Button
-                        android:id="@+id/btnRegistrarse"
-                        android:layout_marginHorizontal="10dp"
-                        android:padding="10dp"
-                        android:textStyle="bold"
-                        android:textSize="18dp"
-                        android:textColor="@color/white"
-                        android:textAllCaps="false"
-                        android:text="INICIAR SESIÓN"
-                        android:background="@drawable/boton_naranja"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                <Button
+                    android:id="@+id/btnIniciarSesion"
+                    android:layout_marginHorizontal="10dp"
+                    android:paddingVertical="12dp"
+                    android:textStyle="bold"
+                    android:textSize="18dp"
+                    android:textColor="@color/white"
+                    android:textAllCaps="false"
+                    android:text="INICIAR SESIÓN"
+                    android:background="@drawable/boton_naranja"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
 
-                    <Space
-                        android:layout_width="match_parent"
-                        android:layout_height="15dp" />
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="16dp" />
 
-                    <Button
-                        android:id="@+id/btnLogin"
-                        android:layout_marginHorizontal="10dp"
-                        android:padding="10dp"
-                        android:textStyle="bold"
-                        android:textSize="18dp"
-                        android:textColor="@color/white"
-                        android:textAllCaps="false"
-                        android:text="REGISTRARSE"
-                        android:background="@drawable/boton_azul"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                </LinearLayout>
+                <Button
+                    android:id="@+id/btnIrARegistro"
+                    android:layout_marginHorizontal="10dp"
+                    android:paddingVertical="12dp"
+                    android:textStyle="bold"
+                    android:textSize="18dp"
+                    android:textColor="@color/white"
+                    android:textAllCaps="false"
+                    android:text="REGISTRARSE"
+                    android:background="@drawable/boton_azul"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
 
             </LinearLayout>
 

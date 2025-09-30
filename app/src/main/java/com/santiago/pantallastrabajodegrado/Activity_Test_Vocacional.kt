@@ -1,8 +1,7 @@
-package com.santiago.pantallastrabajodegrado
+package com.santiago.pantallastrabajodegrado // Asegúrate de que el paquete es correcto
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -12,22 +11,22 @@ class Activity_Test_Vocacional : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_test_vocacional)
+
+        setContentView(R.layout.activity_test_vocacional) // Asegúrate que este layout existe
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            // Asumiendo que R.id.main es el ID del layout raíz en activity_test_vocacional.xml
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        // Botón back
-        val btnBack = findViewById<ImageView>(R.id.btn_back)
-        btnBack.setOnClickListener {
+        // Redirigir inmediatamente a EncuestaActivity
+        val intent = Intent(this, EncuestaActivity::class.java)
+        startActivity(intent)
 
-            val intent = Intent(this, WelcomeActivity::class.java)
-            startActivity(intent)
-            finish() // Opcional: cierra esta Activity para no acumular en el stack
-        }
 
+        finish()
     }
 }
+

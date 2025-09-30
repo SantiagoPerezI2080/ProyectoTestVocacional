@@ -32,13 +32,30 @@ class RegisterActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Validar formato de contraseña (ejemplo: mínimo 6 caracteres)
+            // Validaciones de contraseña
             if (password.length < 6) {
-                Toast.makeText(this, "La contraseña debe tener al menos 6 caracteres.", Toast.LENGTH_SHORT).show()
-                binding.etContrasena.error = "Mínimo 6 caracteres"
+                binding.etContrasena.error = "Mínimo 6 caracteres."
                 binding.etContrasena.requestFocus()
+                Toast.makeText(this, "La contraseña debe tener al menos 6 caracteres.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+
+            if (!password.any { it.isLetter() }) {
+                binding.etContrasena.error = "Debe contener al menos una letra."
+                binding.etContrasena.requestFocus()
+                Toast.makeText(this, "La contraseña debe contener al menos una letra.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (!password.any { it.isDigit() }) {
+                binding.etContrasena.error = "Debe contener al menos un número."
+                binding.etContrasena.requestFocus()
+                Toast.makeText(this, "La contraseña debe contener al menos un número.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            // Si todas las validaciones de contraseña pasan, limpiar el error
+            binding.etContrasena.error = null
+
 
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
