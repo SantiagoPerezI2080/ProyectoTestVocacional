@@ -154,14 +154,24 @@ fun EncuestaScreen() {
 
 @Composable
 fun TestVocacionalScreen() {
-    AndroidView(
-        factory = { context ->
-            val view = LayoutInflater.from(context).inflate(R.layout.activity_test_vocacional, null, false)
-            view
-        },
-        modifier = Modifier.fillMaxSize()
-    )
+    //Top Bar con logo y notificación para reutilizar en las demas pantallas
+    ScreenWithTopBar(
+        showLogo = false,
+        title = "Test Vocacional",// o false si quieres mostrar un título
+        navBack = { /* Acción de volver atrás si aplica */ },
+        onNotification = { /* Acción de notificación */ }
+    ) {
+        AndroidView(
+            factory = { context ->
+                val view = LayoutInflater.from(context)
+                    .inflate(R.layout.activity_test_vocacional, null, false)
+                view
+            },
+            modifier = Modifier.fillMaxSize()
+        )
+    }
 }
+
 
 // Contenido de la pantalla de "Inicio", recreando el XML
 @Composable
