@@ -34,7 +34,7 @@ private val azulOscuro = Color(0xFF074384)
 private val azulClaro = Color(0xFF059DDE)
 private val azulBarra = Color(0xFF0F50A8)
 // --- ACTUALIZACIÓN DE COLOR ---
-private val amarilloAcento = Color(0xFFC49A37) // Este será nuestro color principal de acento
+private val amarilloAcento = Color(0xFFFFC225) // Este será nuestro color principal de acento
 private val azulBotonSecundario = Color(0xFF054594)
 
 // Sealed class para definir cada pantalla de la barra de navegación
@@ -60,19 +60,33 @@ fun WelcomeScreen() {
 
 @Composable
 fun AppBottomNavigation(navController: NavController) {
-    val items = listOf(BottomNavItem.Home, BottomNavItem.Test, BottomNavItem.Carreras, BottomNavItem.Perfil)
-    Surface(color = azulBarra, modifier = Modifier.fillMaxWidth()) {
+    val items = listOf(
+        BottomNavItem.Home,
+        BottomNavItem.Test,
+        BottomNavItem.Carreras,
+        BottomNavItem.Perfil
+    )
+
+    Surface(
+        color = azulBarra,
+        modifier = Modifier
+            .fillMaxWidth()
+            .navigationBarsPadding() // 👈 Ajusta para no quedar bajo la barra del sistema
+    ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
+
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.height(80.dp).fillMaxWidth()
+            modifier = Modifier
+                .height(80.dp)
+                .fillMaxWidth()
         ) {
             items.forEach { item ->
                 val isSelected = currentRoute == item.route
-                // --- ACTUALIZACIÓN DE COLOR ---
                 val contentColor = if (isSelected) amarilloAcento else Color.White
+
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
@@ -92,18 +106,24 @@ fun AppBottomNavigation(navController: NavController) {
                         tint = contentColor,
                         modifier = Modifier.size(23.dp)
                     )
-                    Text(text = item.title, color = contentColor, fontSize = 11.sp, textAlign = TextAlign.Center)
+                    Text(
+                        text = item.title,
+                        color = contentColor,
+                        fontSize = 11.sp,
+                        textAlign = TextAlign.Center
+                    )
                 }
             }
         }
     }
 }
 
+
 @Composable
 fun AppNavHost(navController: NavHostController, paddingValues: PaddingValues) {
     NavHost(navController, startDestination = BottomNavItem.Home.route, modifier = Modifier.padding(paddingValues)) {
         composable(BottomNavItem.Home.route) { MainContent(navController) }
-        composable(BottomNavItem.Test.route) { EncuestaScreen() }
+        composable(BottomNavItem.Test.route) { TestVocacionalScreen() }
         composable(BottomNavItem.Carreras.route) {
             Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(colors = listOf(azulOscuro, azulClaro))), contentAlignment = Alignment.Center) {
                 Text("Pantalla de Carreras", color = Color.White)
@@ -126,6 +146,17 @@ fun EncuestaScreen() {
             val btnEnviar = view.findViewById<XmlButton>(R.id.btnEnviar)
             val logicaEncuesta = Encuesta(context, contenedorPreguntasLayout, btnEnviar)
             logicaEncuesta.mostrarEncuestaEnUI()
+            view
+        },
+        modifier = Modifier.fillMaxSize()
+    )
+}
+
+@Composable
+fun TestVocacionalScreen() {
+    AndroidView(
+        factory = { context ->
+            val view = LayoutInflater.from(context).inflate(R.layout.activity_test_vocacional, null, false)
             view
         },
         modifier = Modifier.fillMaxSize()
@@ -185,7 +216,7 @@ fun MainContent(navController: NavController) {
 
             // Buttons
             Button(
-                onClick = { navController.navigate(BottomNavItem.Test.route) }, // Navega a la pantalla de Test
+                onClick = { navController.navigate("testVocacional") }, // Navega a la pantalla de Test
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = RoundedCornerShape(12.dp),
                 // --- ACTUALIZACIÓN DE COLOR ---
