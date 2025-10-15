@@ -1,0 +1,22 @@
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Estado cuando el RadioButton está seleccionado (checked) -->
+    <item android:state_checked="true">
+        <shape android:shape="oval">
+            <solid android:color="#FF4081"/> <!-- Color de acento cuando está seleccionado. ¡AJUSTA ESTE COLOR! -->
+            <size android:width="20dp" android:height="20dp"/>
+            <stroke android:width="2dp" android:color="#FF4081"/> <!-- Borde del mismo color que el relleno -->
+        </shape>
+    </item>
+
+    <!-- Estado por defecto (no seleccionado) -->
+    <item android:state_checked="false">
+        <shape android:shape="oval">
+            <solid android:color="@android:color/transparent"/> <!-- Interior transparente o un gris muy claro -->
+            <size android:width="20dp" android:height="20dp"/>
+            <stroke android:width="2dp" android:color="#B0B0B0"/> <!-- Borde gris oscuro/medio -->
+        </shape>
+    </item>
+
+</selector>

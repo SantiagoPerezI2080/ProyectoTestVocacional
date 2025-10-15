@@ -36,6 +36,10 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.1" // Usa una versión compatible con tu versión de Kotlin
     }
 }
 
@@ -52,8 +56,27 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    // implementation(libs.firebase.auth.ktx) // Comentado o eliminado ya que la BoM lo gestiona
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // --- Dependencias de Jetpack Compose ---
+    // BOM para manejar versiones de Compose
+    val composeBom = platform("androidx.compose:compose-bom:2024.06.00")
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
+
+    // Dependencias de Compose (las versiones se gestionan con el BOM)
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("androidx.compose.material3:material3")
+
+    // Integración con Activities y Navigation
+    implementation("androidx.activity:activity-compose:1.9.0")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+
+    // Herramientas de depuración para Compose
+    debugImplementation("androidx.compose.ui:ui-tooling")
 }

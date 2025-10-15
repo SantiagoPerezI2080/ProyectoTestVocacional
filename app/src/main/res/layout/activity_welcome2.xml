@@ -65,10 +65,10 @@
         app:cardCornerRadius="16dp"
         app:cardElevation="1dp"
         app:layout_constraintVertical_bias="0.3"
-        app:layout_constraintTop_toBottomOf="@+id/top_bar"
+        app:layout_constraintTop_toBottomOf="@id/top_bar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/btn_iniciar_test">
+        app:layout_constraintBottom_toTopOf="@id/btn_iniciar_test">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -91,11 +91,11 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:lineSpacingExtra="4dp"
                 android:text="¿Listo para descubrir la carrera que mejor se adapta a ti?\n\nEsta app está diseñada para ayudarte a tomar una de las decisiones más importantes de tu vida.\n\nA través de un test personalizado, exploraremos tus intereses, habilidades y valores para sugerirte las opciones de carrera que mejor se alinean con tu perfil.\n\nTu futuro comienza aquí, ¡comencemos!"
-                android:textColor="@android:color/white"
                 android:textAlignment="center"
-                android:textSize="16sp"
-                android:lineSpacingExtra="4dp" />
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -112,10 +112,10 @@
         android:textStyle="bold"
         android:padding="16dp"
         android:background="@drawable/boton_naranja"
-        app:layout_constraintTop_toBottomOf="@+id/card_bienvenida"
+        app:layout_constraintTop_toBottomOf="@id/card_bienvenida"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/btn_ver_resultados"/>
+        app:layout_constraintBottom_toTopOf="@id/btn_ver_resultados"/>
 
     <Button
         android:id="@+id/btn_ver_resultados"
@@ -130,17 +130,8 @@
         android:textStyle="bold"
         android:padding="16dp"
         android:background="@drawable/boton_azul"
-        app:layout_constraintTop_toBottomOf="@+id/btn_iniciar_test"
+        app:layout_constraintTop_toBottomOf="@id/btn_iniciar_test"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
-
-    <include
-        layout="@layout/bottom_nav"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
