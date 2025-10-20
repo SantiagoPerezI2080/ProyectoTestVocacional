@@ -133,7 +133,7 @@ fun AppBottomNavigation(navController: NavController) {
 fun AppNavHost(navController: NavHostController, paddingValues: PaddingValues) {
     NavHost(navController, startDestination = BottomNavItem.Home.route, modifier = Modifier.padding(paddingValues)) {
         composable(BottomNavItem.Home.route) { MainContent(navController) }
-        composable(BottomNavItem.Test.route) { TestVocacionalScreen() }
+        composable(BottomNavItem.Test.route) { TestVocacionalScreen(onBack = { navController.popBackStack() }) }
         composable(BottomNavItem.Carreras.route) {
             Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(colors = listOf(azulOscuro, azulClaro))), contentAlignment = Alignment.Center) {
                 Text("Pantalla de Carreras", color = Color.White)
@@ -153,8 +153,6 @@ fun AppNavHost(navController: NavHostController, paddingValues: PaddingValues) {
         composable("results") {
             ResultsScreen(onBack = { navController.popBackStack() })
         }
-
-
     }
 }
 
@@ -236,19 +234,17 @@ fun ResultsScreen(onBack: () -> Unit) {
 
 
 @Composable
-fun TestVocacionalScreen() {
-    //Top Bar con logo y notificación para reutilizar en las demas pantallas
+fun TestVocacionalScreen(onBack: () -> Unit) {
     ScreenWithTopBar(
         showLogo = false,
-        title = "Test Vocacional",// o false si quieres mostrar un título
-        navBack = { /* Acción de volver atrás si aplica */ },
+        title = "Test Vocacional",
+        navBack = { onBack() },
         onNotification = { /* Acción de notificación */ }
     ) {
         AndroidView(
             factory = { context ->
-                val view = LayoutInflater.from(context)
+                LayoutInflater.from(context)
                     .inflate(R.layout.activity_test_vocacional, null, false)
-                view
             },
             modifier = Modifier.fillMaxSize()
         )
@@ -256,81 +252,40 @@ fun TestVocacionalScreen() {
 }
 
 
+
 // Contenido de la pantalla de "Inicio", recreando el XML
 @Composable
 fun MainContent(navController: NavController) {
-    Column(
-        modifier = Modifier.fillMaxSize().background(
-            brush = Brush.verticalGradient(colors = listOf(azulOscuro, azulClaro))
-        )
+    ScreenWithTopBar(
+        showLogo = true,
+        title = "Inicio",// o false si quieres mostrar un título
+        navBack = { /* Acción de volver atrás si aplica */ },
+        onNotification = { /* Acción de notificación */ }
     ) {
-        // Top Bar
-        Row(
-            modifier = Modifier.fillMaxWidth().height(56.dp).background(azulBarra).padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(painter = painterResource(id = R.drawable.icon_backofi), contentDescription = "Atrás", tint = Color.White, modifier = Modifier.size(32.dp))
-            Spacer(modifier = Modifier.weight(1f))
-            Image(painter = painterResource(id = R.drawable.logo_white), contentDescription = "Logo", modifier = Modifier.height(40.dp))
-            Spacer(modifier = Modifier.weight(1f))
-            Icon(painter = painterResource(id = R.drawable.icon_notificacion), contentDescription = "Notificaciones", tint = Color.White, modifier = Modifier.size(32.dp))
-        }
+        AndroidView(
+            factory = { context ->
+                LayoutInflater.from(context).inflate(R.layout.activity_welcome2, null, false)
+                    .apply {
+                        // Referencias a los botones
+                        val btnIniciar = findViewById<Button>(R.id.btn_iniciar_test)
+                        val btnResultados = findViewById<Button>(R.id.btn_ver_resultados)
 
-        // Body Content
-        Column(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(modifier = Modifier.height(60.dp))
+                        // Navegar a test
+                        btnIniciar.setOnClickListener {
+                            navController.navigate(BottomNavItem.Test.route)
+                        }
 
-            // Welcome Card
-            Card(
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFF0D5FC6)),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(text = "¡Bienvenido a tu Futuro!", color = amarilloAcento, fontSize = 28.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(
-                        text = "¿Listo para descubrir la carrera que mejor se adapta a ti?\n\nEsta app está diseñada para ayudarte a tomar una de las decisiones más importantes de tu vida.\n\nA través de un test personalizado, exploraremos tus intereses, habilidades y valores para sugerirte las opciones de carrera que mejor se alinean con tu perfil.\n\nTu futuro comienza aquí, ¡comencemos!",
-                        color = Color.White,
-                        textAlign = TextAlign.Center,
-                        fontSize = 16.sp,
-                        lineHeight = 22.sp
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(30.dp))
-
-            // Buttons
-            Button(
-                onClick = { navController.navigate("testVocacional") }, // Navega a la pantalla de Test
-                modifier = Modifier.fillMaxWidth().height(56.dp),
-                shape = RoundedCornerShape(12.dp),
-                // --- ACTUALIZACIÓN DE COLOR ---
-                colors = ButtonDefaults.buttonColors(containerColor = amarilloAcento)
-            ) {
-                Text("INICIAR TEST", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Button(
-                onClick = { navController.navigate(BottomNavItem.Carreras.route) }, // Navega a la pantalla de Carreras/Resultados
-                modifier = Modifier.fillMaxWidth().height(56.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = azulBotonSecundario)
-            ) {
-                Text("VER RESULTADOS", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            }
-        }
+                        // Navegar a resultados (o carreras)
+                        btnResultados.setOnClickListener {
+                            navController.navigate(BottomNavItem.Carreras.route)
+                        }
+                    }
+            },
+            modifier = Modifier.fillMaxSize()
+        )
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
