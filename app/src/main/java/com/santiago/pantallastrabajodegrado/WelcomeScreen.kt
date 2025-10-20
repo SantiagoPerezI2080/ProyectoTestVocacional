@@ -29,6 +29,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.santiago.pantallastrabajodegrado.ui.theme.PantallasTrabajoDeGradoTheme
 
+import android.widget.Button
+import android.widget.TextView
+import com.google.firebase.auth.FirebaseAuth
+import androidx.compose.ui.viewinterop.AndroidView
+
+
 // --- COLORES UNIFICADOS DEL TEMA ---
 private val azulOscuro = Color(0xFF074384)
 private val azulClaro = Color(0xFF059DDE)
@@ -130,10 +136,16 @@ fun AppNavHost(navController: NavHostController, paddingValues: PaddingValues) {
             }
         }
         composable(BottomNavItem.Perfil.route) {
-            Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(colors = listOf(azulOscuro, azulClaro))), contentAlignment = Alignment.Center) {
-                Text("Pantalla de Perfil", color = Color.White)
-            }
+            val context = LocalContext.current
+            PerfilScreen(
+                onSignOut = {
+                    // 👇 Aquí defines qué pasa al cerrar sesión
+                    val intent = Intent(context, LoginActivity::class.java)
+                    context.startActivity(intent)
+                }
+            )
         }
+
     }
 }
 
@@ -151,6 +163,41 @@ fun EncuestaScreen() {
         modifier = Modifier.fillMaxSize()
     )
 }
+
+@Composable
+fun PerfilScreen(onSignOut: () -> Unit) {
+    val user = FirebaseAuth.getInstance().currentUser
+
+    ScreenWithTopBar(
+        showLogo = false,
+        title = "Mi Perfil",
+        navBack = { },
+        onNotification = { }
+    ) {
+        AndroidView(
+            factory = { context ->
+                LayoutInflater.from(context).inflate(R.layout.activity_profile, null, false).apply {
+                    val tvName = findViewById<TextView>(R.id.tv_name)
+                    val tvEmail = findViewById<TextView>(R.id.tv_email)
+                    val btnSignOut = findViewById<Button>(R.id.btn_sign_out)
+
+                    // Mostrar datos del usuario logueado
+                    tvName.text = user?.displayName ?: "Usuario"
+                    tvEmail.text = user?.email ?: "Sin correo"
+
+                    // Cerrar sesión
+                    btnSignOut.setOnClickListener {
+                        FirebaseAuth.getInstance().signOut()
+                        onSignOut()
+                    }
+                }
+            },
+            modifier = Modifier.fillMaxSize()
+        )
+    }
+}
+
+
 
 @Composable
 fun TestVocacionalScreen() {
