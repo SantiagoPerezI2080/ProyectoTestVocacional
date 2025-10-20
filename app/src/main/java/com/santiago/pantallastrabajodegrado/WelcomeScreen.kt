@@ -31,8 +31,12 @@ import com.santiago.pantallastrabajodegrado.ui.theme.PantallasTrabajoDeGradoThem
 
 import android.widget.Button
 import android.widget.TextView
+import android.view.View
 import com.google.firebase.auth.FirebaseAuth
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.compose.rememberNavController
 
 
 // --- COLORES UNIFICADOS DEL TEMA ---
@@ -138,13 +142,18 @@ fun AppNavHost(navController: NavHostController, paddingValues: PaddingValues) {
         composable(BottomNavItem.Perfil.route) {
             val context = LocalContext.current
             PerfilScreen(
+                navController = navController, // <- pásalo desde MainActivity
                 onSignOut = {
-                    // 👇 Aquí defines qué pasa al cerrar sesión
                     val intent = Intent(context, LoginActivity::class.java)
                     context.startActivity(intent)
                 }
             )
         }
+
+        composable("results") {
+            ResultsScreen(onBack = { navController.popBackStack() })
+        }
+
 
     }
 }
@@ -165,7 +174,11 @@ fun EncuestaScreen() {
 }
 
 @Composable
-fun PerfilScreen(onSignOut: () -> Unit) {
+fun PerfilScreen(
+    navController: NavController, // <- pásalo desde MainActivity
+    onSignOut: () -> Unit
+) {
+    val context = LocalContext.current
     val user = FirebaseAuth.getInstance().currentUser
 
     ScreenWithTopBar(
@@ -175,22 +188,45 @@ fun PerfilScreen(onSignOut: () -> Unit) {
         onNotification = { }
     ) {
         AndroidView(
-            factory = { context ->
-                LayoutInflater.from(context).inflate(R.layout.activity_profile, null, false).apply {
+            factory = { ctx ->
+                LayoutInflater.from(ctx).inflate(R.layout.activity_profile, null, false).apply {
                     val tvName = findViewById<TextView>(R.id.tv_name)
                     val tvEmail = findViewById<TextView>(R.id.tv_email)
                     val btnSignOut = findViewById<Button>(R.id.btn_sign_out)
+                    val optionResults = findViewById<View>(R.id.option_results)
 
-                    // Mostrar datos del usuario logueado
                     tvName.text = user?.displayName ?: "Usuario"
                     tvEmail.text = user?.email ?: "Sin correo"
 
-                    // Cerrar sesión
+                    // ✅ Navegar correctamente con el navController que viene por parámetro
+                    optionResults.setOnClickListener {
+                        navController.navigate("results")
+                    }
+
                     btnSignOut.setOnClickListener {
                         FirebaseAuth.getInstance().signOut()
                         onSignOut()
                     }
                 }
+            },
+            modifier = Modifier.fillMaxSize()
+        )
+    }
+}
+
+
+
+@Composable
+fun ResultsScreen(onBack: () -> Unit) {
+    ScreenWithTopBar(
+        showLogo = false,
+        title = "Mis Resultados",
+        navBack = { onBack() },
+        onNotification = { /* si luego agregas notificaciones */ }
+    ) {
+        AndroidView(
+            factory = { context ->
+                LayoutInflater.from(context).inflate(R.layout.activity_results, null, false)
             },
             modifier = Modifier.fillMaxSize()
         )

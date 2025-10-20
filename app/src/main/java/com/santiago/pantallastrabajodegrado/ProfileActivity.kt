@@ -30,6 +30,8 @@ class ProfileActivity : AppCompatActivity() {
 
         binding.optionResults.setOnClickListener {
             // Navegar a resultados
+            val intent = Intent(this, ResultsActivity::class.java)
+            startActivity(intent)
         }
 
         binding.optionOther.setOnClickListener {
