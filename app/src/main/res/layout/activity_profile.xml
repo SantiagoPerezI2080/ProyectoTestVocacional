@@ -124,9 +124,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginBottom="12dp"
+                android:focusable="true"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp"
-                app:cardBackgroundColor="#1E6B9A">
+                app:cardBackgroundColor="#1E6B9A"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -134,7 +137,9 @@
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
                     android:background="@drawable/boton_azul"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:foreground="?attr/selectableItemBackground"
+                    >
 
                     <ImageView
                         android:id="@+id/icon_results"
