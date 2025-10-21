@@ -4,7 +4,6 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button as XmlButton
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -34,6 +33,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.google.firebase.auth.FirebaseAuth
+import com.santiago.pantallastrabajodegrado.ui.EncuestaScreenCompose
 import com.santiago.pantallastrabajodegrado.ui.theme.PantallasTrabajoDeGradoTheme
 
 // --- COLORES UNIFICADOS DEL TEMA ---
@@ -60,13 +60,12 @@ data class Programa(
     val colorTitulo: Color = Color.White
 )
 
-// 2. Datos de ejemplo para las carreras (actualizado con más carreras)
+// 2. Datos de ejemplo para las carreras
 val programasDeEjemplo = listOf(
     Programa("Ingeniería de Sistemas", "9 semestres", 157, R.drawable.ing_software, colorTitulo = Color.White),
     Programa("Administración de Empresas", "9 semestres", 157, R.drawable.admin_empr, colorTitulo = Color(0xFFFF7F2A)), // naranja
     Programa("Derecho", "10 semestres", 169, R.drawable.derecho, colorTitulo = Color(0xFF39E27D)), // verde
     Programa("Entrenamiento Deportivo", "9 semestres", 168, R.drawable.deporte, colorTitulo = Color(0xFFD243F0)), // magenta
-    // --- Carreras agregadas ---
     Programa("Psicología", "10 semestres", 158, R.drawable.psicologia, colorTitulo = Color.White),
     Programa("Medicina", "12 semestres", 280, R.drawable.medicina, colorTitulo = Color(0xFF4FC3F7)), // celeste
     Programa("Diseño Gráfico", "8 semestres", 140, R.drawable.diseno_grafica, colorTitulo = Color(0xFFFFEB3B)), // amarillo
@@ -92,7 +91,12 @@ fun WelcomeScreen() {
 @Composable
 fun AppBottomNavigation(navController: NavController) {
     val items = listOf(BottomNavItem.Home, BottomNavItem.Test, BottomNavItem.Carreras, BottomNavItem.Perfil)
-    Surface(color = azulBarra, modifier = Modifier.fillMaxWidth()) {
+    Surface(
+        color = azulBarra,
+        modifier = Modifier
+            .fillMaxWidth()
+            .navigationBarsPadding()
+    ){
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
         Row(
@@ -128,7 +132,10 @@ fun AppBottomNavigation(navController: NavController) {
 fun AppNavHost(navController: NavHostController, paddingValues: PaddingValues) {
     NavHost(navController, startDestination = BottomNavItem.Home.route, modifier = Modifier.padding(paddingValues)) {
         composable(BottomNavItem.Home.route) { MainContent(navController) }
-        composable(BottomNavItem.Test.route) { TestVocacionalScreen(navController = navController, onBack = { navController.popBackStack() }) }
+        // --- RUTA DEL TEST ACTUALIZADA ---
+        composable(BottomNavItem.Test.route) {
+            EncuestaScreenCompose(onBack = { navController.popBackStack() })
+        }
         composable(BottomNavItem.Carreras.route) {
             CarrerasScreen(onBack = { navController.popBackStack() })
         }
@@ -144,7 +151,6 @@ fun AppNavHost(navController: NavHostController, paddingValues: PaddingValues) {
             )
         }
         composable("results") { ResultsScreen(onBack = { navController.popBackStack() }) }
-        composable("encuesta") { EncuestaScreen(onBack = { navController.popBackStack() }) }
     }
 }
 
@@ -318,24 +324,6 @@ fun CarrerasScreen(onBack: () -> Unit) {
     }
 }
 
-// --- OTRAS PANTALLAS (SIN CAMBIOS) ---
-@Composable
-fun EncuestaScreen( onBack: () -> Unit) {
-    ScreenWithTopBar(showLogo = false, title = "Test Vocacional", navBack = { onBack() }, onNotification = { }) {
-        AndroidView(
-            factory = { context ->
-                val view = LayoutInflater.from(context).inflate(R.layout.activity_encuesta, null, false)
-                val contenedorPreguntasLayout = view.findViewById<LinearLayout>(R.id.contenedorPreguntas)
-                val btnEnviar = view.findViewById<XmlButton>(R.id.btnEnviar)
-                val logicaEncuesta = Encuesta(context, contenedorPreguntasLayout, btnEnviar)
-                logicaEncuesta.mostrarEncuestaEnUI()
-                view
-            },
-            modifier = Modifier.fillMaxSize()
-        )
-    }
-}
-
 @Composable
 fun PerfilScreen(navController: NavController, onSignOut: () -> Unit, onBack: () -> Unit) {
     val user = FirebaseAuth.getInstance().currentUser
@@ -361,23 +349,6 @@ fun PerfilScreen(navController: NavController, onSignOut: () -> Unit, onBack: ()
 fun ResultsScreen(onBack: () -> Unit) {
     ScreenWithTopBar(showLogo = false, title = "Mis Resultados", navBack = { onBack() }, onNotification = { }) {
         AndroidView(factory = { LayoutInflater.from(it).inflate(R.layout.activity_results, null, false) }, modifier = Modifier.fillMaxSize())
-    }
-}
-
-@Composable
-fun TestVocacionalScreen(navController: NavController, onBack: () -> Unit) {
-    ScreenWithTopBar(showLogo = false, title = "Test Vocacional", navBack = { onBack() }, onNotification = { }) {
-        AndroidView(
-            factory = { context ->
-                LayoutInflater.from(context).inflate(R.layout.activity_test_vocacional, null, false)
-                    .apply {
-                        findViewById<XmlButton>(R.id.btn_siguiente).setOnClickListener {
-                            navController.navigate("encuesta")
-                        }
-                    }
-            },
-            modifier = Modifier.fillMaxSize()
-        )
     }
 }
 

@@ -39,7 +39,10 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1" // Usa una versión compatible con tu versión de Kotlin
+        kotlinCompilerExtensionVersion = "1.5.1"
+    }
+    packagingOptions {
+        resources.excludes.add("/META-INF/{AL,LGPL2.1}")
     }
 }
 
@@ -72,10 +75,16 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material:material-icons-extended") // Para más íconos
 
     // Integración con Activities y Navigation
     implementation("androidx.activity:activity-compose:1.9.0")
     implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3")
+
+    // --- Dependencias de Retrofit y Gson ---
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
     // Herramientas de depuración para Compose
     debugImplementation("androidx.compose.ui:ui-tooling")

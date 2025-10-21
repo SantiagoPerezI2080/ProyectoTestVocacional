@@ -104,8 +104,8 @@ fun AppTopBar(
 fun ScreenWithTopBar(
     showLogo: Boolean = true,
     title: String? = null,
-    navBack: (() -> Unit)? = null,
-    onNotification: (() -> Unit)? = null,
+    navBack: () -> Unit,
+    onNotification: () -> Unit,
     content: @Composable ColumnScope.() -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
@@ -115,12 +115,10 @@ fun ScreenWithTopBar(
             onBack = navBack,
             onNotification = onNotification
         )
-        // **MODIFICACIÓN:** Se eliminó el padding(top = 8.dp)
         Column(
-            modifier = Modifier.fillMaxSize()
-            // Puedes agregar un fondo al contenido si lo deseas, por ejemplo:
-            // .background(Color.White),
-            ,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 8.dp),
             content = content
         )
     }
