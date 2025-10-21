@@ -92,7 +92,12 @@ fun WelcomeScreen() {
 @Composable
 fun AppBottomNavigation(navController: NavController) {
     val items = listOf(BottomNavItem.Home, BottomNavItem.Test, BottomNavItem.Carreras, BottomNavItem.Perfil)
-    Surface(color = azulBarra, modifier = Modifier.fillMaxWidth()) {
+    Surface(
+        color = azulBarra,
+        modifier = Modifier
+            .fillMaxWidth()
+            .navigationBarsPadding()
+    ){
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
         Row(
