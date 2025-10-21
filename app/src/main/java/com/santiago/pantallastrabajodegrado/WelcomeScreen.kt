@@ -2,20 +2,26 @@ package com.santiago.pantallastrabajodegrado
 
 import android.content.Intent
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.Button as XmlButton
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -27,24 +33,14 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
-import com.santiago.pantallastrabajodegrado.ui.theme.PantallasTrabajoDeGradoTheme
-
-import android.widget.Button
-import android.widget.TextView
-import android.view.View
 import com.google.firebase.auth.FirebaseAuth
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.compose.rememberNavController
-
+import com.santiago.pantallastrabajodegrado.ui.theme.PantallasTrabajoDeGradoTheme
 
 // --- COLORES UNIFICADOS DEL TEMA ---
 private val azulOscuro = Color(0xFF074384)
 private val azulClaro = Color(0xFF059DDE)
 private val azulBarra = Color(0xFF0F50A8)
-// --- ACTUALIZACIÓN DE COLOR ---
-private val amarilloAcento = Color(0xFFFFC225) // Este será nuestro color principal de acento
+private val amarilloAcento = Color(0xFFFFC225)
 private val azulBotonSecundario = Color(0xFF054594)
 
 // Sealed class para definir cada pantalla de la barra de navegación
@@ -54,6 +50,31 @@ sealed class BottomNavItem(val route: String, val title: String, val icon: Int) 
     object Carreras : BottomNavItem("carreras", "Carreras", R.drawable.iccon_carrerasofi)
     object Perfil : BottomNavItem("perfil", "Perfil", R.drawable.icon_perfil)
 }
+
+// 1. Modelo de Datos para las carreras
+data class Programa(
+    val titulo: String,
+    val duracion: String,
+    val creditos: Int,
+    val imagenRes: Int,
+    val colorTitulo: Color = Color.White
+)
+
+// 2. Datos de ejemplo para las carreras (actualizado con más carreras)
+val programasDeEjemplo = listOf(
+    Programa("Ingeniería de Sistemas", "9 semestres", 157, R.drawable.ing_software, colorTitulo = Color.White),
+    Programa("Administración de Empresas", "9 semestres", 157, R.drawable.admin_empr, colorTitulo = Color(0xFFFF7F2A)), // naranja
+    Programa("Derecho", "10 semestres", 169, R.drawable.derecho, colorTitulo = Color(0xFF39E27D)), // verde
+    Programa("Entrenamiento Deportivo", "9 semestres", 168, R.drawable.deporte, colorTitulo = Color(0xFFD243F0)), // magenta
+    // --- Carreras agregadas ---
+    Programa("Psicología", "10 semestres", 158, R.drawable.psicologia, colorTitulo = Color.White),
+    Programa("Medicina", "12 semestres", 280, R.drawable.medicina, colorTitulo = Color(0xFF4FC3F7)), // celeste
+    Programa("Diseño Gráfico", "8 semestres", 140, R.drawable.diseno_grafica, colorTitulo = Color(0xFFFFEB3B)), // amarillo
+    Programa("Arquitectura", "10 semestres", 175, R.drawable.arquitectura, colorTitulo = Color.White),
+    Programa("Comunicación Social", "9 semestres", 155, R.drawable.com_social, colorTitulo = Color(0xFFF06292)), // rosa
+    Programa("Contaduría Pública", "9 semestres", 150, R.drawable.con_publica, colorTitulo = Color.White)
+)
+
 
 @Composable
 fun WelcomeScreen() {
@@ -70,33 +91,18 @@ fun WelcomeScreen() {
 
 @Composable
 fun AppBottomNavigation(navController: NavController) {
-    val items = listOf(
-        BottomNavItem.Home,
-        BottomNavItem.Test,
-        BottomNavItem.Carreras,
-        BottomNavItem.Perfil
-    )
-
-    Surface(
-        color = azulBarra,
-        modifier = Modifier
-            .fillMaxWidth()
-            .navigationBarsPadding() // 👈 Ajusta para no quedar bajo la barra del sistema
-    ) {
+    val items = listOf(BottomNavItem.Home, BottomNavItem.Test, BottomNavItem.Carreras, BottomNavItem.Perfil)
+    Surface(color = azulBarra, modifier = Modifier.fillMaxWidth()) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
-
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .height(80.dp)
-                .fillMaxWidth()
+            modifier = Modifier.height(80.dp).fillMaxWidth()
         ) {
             items.forEach { item ->
                 val isSelected = currentRoute == item.route
                 val contentColor = if (isSelected) amarilloAcento else Color.White
-
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
@@ -110,24 +116,13 @@ fun AppBottomNavigation(navController: NavController) {
                         }
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                 ) {
-                    Icon(
-                        painter = painterResource(id = item.icon),
-                        contentDescription = item.title,
-                        tint = contentColor,
-                        modifier = Modifier.size(23.dp)
-                    )
-                    Text(
-                        text = item.title,
-                        color = contentColor,
-                        fontSize = 11.sp,
-                        textAlign = TextAlign.Center
-                    )
+                    Icon(painter = painterResource(id = item.icon), contentDescription = item.title, tint = contentColor, modifier = Modifier.size(23.dp))
+                    Text(text = item.title, color = contentColor, fontSize = 11.sp, textAlign = TextAlign.Center)
                 }
             }
         }
     }
 }
-
 
 @Composable
 fun AppNavHost(navController: NavHostController, paddingValues: PaddingValues) {
@@ -135,86 +130,223 @@ fun AppNavHost(navController: NavHostController, paddingValues: PaddingValues) {
         composable(BottomNavItem.Home.route) { MainContent(navController) }
         composable(BottomNavItem.Test.route) { TestVocacionalScreen(navController = navController, onBack = { navController.popBackStack() }) }
         composable(BottomNavItem.Carreras.route) {
-            Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(colors = listOf(azulOscuro, azulClaro))), contentAlignment = Alignment.Center) {
-                Text("Pantalla de Carreras", color = Color.White)
-            }
+            CarrerasScreen(onBack = { navController.popBackStack() })
         }
         composable(BottomNavItem.Perfil.route) {
             val context = LocalContext.current
             PerfilScreen(
                 onBack = { navController.popBackStack() },
-                navController = navController, // <- pásalo desde MainActivity
+                navController = navController,
                 onSignOut = {
                     val intent = Intent(context, HomeActivity::class.java)
                     context.startActivity(intent)
                 }
             )
         }
+        composable("results") { ResultsScreen(onBack = { navController.popBackStack() }) }
+        composable("encuesta") { EncuestaScreen(onBack = { navController.popBackStack() }) }
+    }
+}
 
-        composable("results") {
-            ResultsScreen(onBack = { navController.popBackStack() })
+// --- BARRA SUPERIOR REUTILIZABLE (NUEVA VERSIÓN) ---
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ScreenWithTopBar(
+    title: String,
+    showLogo: Boolean,
+    navBack: () -> Unit,
+    onNotification: () -> Unit,
+    leftIsSearch: Boolean = false,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF0A1E3D)) // fondo azul oscuro
+    ) {
+        CenterAlignedTopAppBar(
+            title = {
+                if (showLogo) {
+                    Image(
+                        painter = painterResource(id = R.drawable.logo_white),
+                        contentDescription = "Logo",
+                        modifier = Modifier.height(35.dp)
+                    )
+                } else {
+                    Text(
+                        text = title.uppercase(), // mayúsculas
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            },
+            navigationIcon = {
+                if (leftIsSearch) {
+                    IconButton(onClick = { /* abrir búsqueda */ }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.icon_lupa),
+                            contentDescription = "Buscar",
+                            tint = Color.White
+                        )
+                    }
+                } else {
+                    IconButton(onClick = navBack) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.icon_backofi),
+                            contentDescription = "Atrás",
+                            tint = Color.White
+                        )
+                    }
+                }
+            },
+            actions = {
+                IconButton(onClick = onNotification) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.icon_notificacion),
+                        contentDescription = "Notificaciones",
+                        tint = Color.White
+                    )
+                }
+            },
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = Color(0xFF0F2143) // barra azul oscura
+            )
+        )
+        content(this)
+    }
+}
+
+// --- NUEVA TARJETA DE PROGRAMA ---
+@Composable
+fun ProgramaCardMockup(
+    programa: Programa,
+    modifier: Modifier = Modifier,
+    onVerMas: () -> Unit = {}
+) {
+    val radius = 16.dp
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(150.dp),
+        shape = RoundedCornerShape(radius),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF123258)),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+    ) {
+        Row(Modifier.fillMaxSize()) {
+            Image(
+                painter = painterResource(id = programa.imagenRes),
+                contentDescription = programa.titulo,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .width(130.dp)
+                    .fillMaxHeight()
+                    .clip(
+                        RoundedCornerShape(
+                            topStart = radius, bottomStart = radius,
+                            topEnd = 0.dp, bottomEnd = 0.dp
+                        )
+                    )
+            )
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
+                    .background(
+                        brush = Brush.linearGradient(
+                            listOf(Color(0xFF0B75C8), Color(0xFF0A478B))
+                        ),
+                        shape = RoundedCornerShape(
+                            topStart = 0.dp, bottomStart = 0.dp,
+                            topEnd = radius, bottomEnd = radius
+                        )
+                    )
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(14.dp)
+                ) {
+                    Text(
+                        text = programa.titulo,
+                        color = programa.colorTitulo,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 2
+                    )
+                    Spacer(Modifier.height(6.dp))
+                    Text(text = "Duración: ${programa.duracion}", color = Color(0xE6FFFFFF), fontSize = 12.sp)
+                    Text(text = "Total de créditos: ${programa.creditos}", color = Color(0xE6FFFFFF), fontSize = 12.sp)
+                    Spacer(Modifier.height(10.dp))
+                    Button(
+                        onClick = onVerMas,
+                        shape = RoundedCornerShape(50),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color(0xFF0B2447)),
+                        contentPadding = PaddingValues(horizontal = 16.dp),
+                        modifier = Modifier.height(36.dp)
+                    ) { Text("Ver más") }
+                }
+            }
         }
+    }
+}
 
-        composable("encuesta") {
-            EncuestaScreen(onBack = { navController.popBackStack() })
+// --- NUEVA PANTALLA DE CARRERAS ---
+@Composable
+fun CarrerasScreen(onBack: () -> Unit) {
+    ScreenWithTopBar(
+        showLogo = false,
+        title = "Programas de pregrado",
+        navBack = { /* sin back en esta vista */ },
+        onNotification = { /* abrir notificaciones */ },
+        leftIsSearch = true
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFF0A1E3D)),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(programasDeEjemplo) { programa ->
+                ProgramaCardMockup(
+                    programa = programa,
+                    onVerMas = { /* TODO: navegar al detalle */ }
+                )
+            }
+            item { Spacer(modifier = Modifier.height(80.dp)) }
         }
+    }
+}
 
+// --- OTRAS PANTALLAS (SIN CAMBIOS) ---
+@Composable
+fun EncuestaScreen( onBack: () -> Unit) {
+    ScreenWithTopBar(showLogo = false, title = "Test Vocacional", navBack = { onBack() }, onNotification = { }) {
+        AndroidView(
+            factory = { context ->
+                val view = LayoutInflater.from(context).inflate(R.layout.activity_encuesta, null, false)
+                val contenedorPreguntasLayout = view.findViewById<LinearLayout>(R.id.contenedorPreguntas)
+                val btnEnviar = view.findViewById<XmlButton>(R.id.btnEnviar)
+                val logicaEncuesta = Encuesta(context, contenedorPreguntasLayout, btnEnviar)
+                logicaEncuesta.mostrarEncuestaEnUI()
+                view
+            },
+            modifier = Modifier.fillMaxSize()
+        )
     }
 }
 
 @Composable
-fun EncuestaScreen( onBack: () -> Unit) {
-    ScreenWithTopBar(
-        showLogo = false,
-        title = "Test Vocacional",
-        navBack = { onBack() },
-        onNotification = { }
-    ) {
-    AndroidView(
-        factory = { context ->
-            val view = LayoutInflater.from(context).inflate(R.layout.activity_encuesta, null, false)
-            val contenedorPreguntasLayout = view.findViewById<LinearLayout>(R.id.contenedorPreguntas)
-            val btnEnviar = view.findViewById<XmlButton>(R.id.btnEnviar)
-            val logicaEncuesta = Encuesta(context, contenedorPreguntasLayout, btnEnviar)
-            logicaEncuesta.mostrarEncuestaEnUI()
-            view
-        },
-        modifier = Modifier.fillMaxSize()
-    )}
-}
-
-@Composable
-fun PerfilScreen(
-    navController: NavController, // <- pásalo desde MainActivity
-    onSignOut: () -> Unit,
-    onBack: () -> Unit
-) {
-    val context = LocalContext.current
+fun PerfilScreen(navController: NavController, onSignOut: () -> Unit, onBack: () -> Unit) {
     val user = FirebaseAuth.getInstance().currentUser
-
-    ScreenWithTopBar(
-        showLogo = false,
-        title = "Mi Perfil",
-        navBack = { onBack() },
-        onNotification = { }
-    ) {
+    ScreenWithTopBar(showLogo = false, title = "Mi Perfil", navBack = { onBack() }, onNotification = { }) {
         AndroidView(
             factory = { ctx ->
                 LayoutInflater.from(ctx).inflate(R.layout.activity_profile, null, false).apply {
-                    val tvName = findViewById<TextView>(R.id.tv_name)
-                    val tvEmail = findViewById<TextView>(R.id.tv_email)
-                    val btnSignOut = findViewById<Button>(R.id.btn_sign_out)
-                    val optionResults = findViewById<View>(R.id.option_results)
-
-                    tvName.text = user?.displayName ?: "Usuario"
-                    tvEmail.text = user?.email ?: "Sin correo"
-
-                    // ✅ Navegar correctamente con el navController que viene por parámetro
-                    optionResults.setOnClickListener {
-                        navController.navigate("results")
-                    }
-
-                    btnSignOut.setOnClickListener {
+                    findViewById<TextView>(R.id.tv_name).text = user?.displayName ?: "Usuario"
+                    findViewById<TextView>(R.id.tv_email).text = user?.email ?: "Sin correo"
+                    findViewById<View>(R.id.option_results).setOnClickListener { navController.navigate("results") }
+                    findViewById<XmlButton>(R.id.btn_sign_out).setOnClickListener {
                         FirebaseAuth.getInstance().signOut()
                         onSignOut()
                     }
@@ -225,43 +357,22 @@ fun PerfilScreen(
     }
 }
 
-
-
 @Composable
 fun ResultsScreen(onBack: () -> Unit) {
-    ScreenWithTopBar(
-        showLogo = false,
-        title = "Mis Resultados",
-        navBack = { onBack() },
-        onNotification = { /* si luego agregas notificaciones */ }
-    ) {
-        AndroidView(
-            factory = { context ->
-                LayoutInflater.from(context).inflate(R.layout.activity_results, null, false)
-            },
-            modifier = Modifier.fillMaxSize()
-        )
+    ScreenWithTopBar(showLogo = false, title = "Mis Resultados", navBack = { onBack() }, onNotification = { }) {
+        AndroidView(factory = { LayoutInflater.from(it).inflate(R.layout.activity_results, null, false) }, modifier = Modifier.fillMaxSize())
     }
 }
 
-
-
 @Composable
 fun TestVocacionalScreen(navController: NavController, onBack: () -> Unit) {
-    ScreenWithTopBar(
-        showLogo = false,
-        title = "Test Vocacional",
-        navBack = { onBack() },
-        onNotification = { /* Acción de notificación */ }
-    ) {
+    ScreenWithTopBar(showLogo = false, title = "Test Vocacional", navBack = { onBack() }, onNotification = { }) {
         AndroidView(
             factory = { context ->
-                LayoutInflater.from(context)
-                    .inflate(R.layout.activity_test_vocacional, null, false)
+                LayoutInflater.from(context).inflate(R.layout.activity_test_vocacional, null, false)
                     .apply {
-                        val btnSiguiente = findViewById<Button>(R.id.btn_siguiente)
-                        btnSiguiente.setOnClickListener {
-                            navController.navigate("encuesta") // ✅ ahora sí funciona
+                        findViewById<XmlButton>(R.id.btn_siguiente).setOnClickListener {
+                            navController.navigate("encuesta")
                         }
                     }
             },
@@ -270,41 +381,21 @@ fun TestVocacionalScreen(navController: NavController, onBack: () -> Unit) {
     }
 }
 
-
-
-// Contenido de la pantalla de "Inicio", recreando el XML
 @Composable
 fun MainContent(navController: NavController) {
-    ScreenWithTopBar(
-        showLogo = true,
-        title = "Inicio",// o false si quieres mostrar un título
-        navBack = { /* Acción de volver atrás si aplica */ },
-        onNotification = { /* Acción de notificación */ }
-    ) {
+    ScreenWithTopBar(showLogo = true, title = "Inicio", navBack = { }, onNotification = { }) {
         AndroidView(
             factory = { context ->
                 LayoutInflater.from(context).inflate(R.layout.activity_welcome2, null, false)
                     .apply {
-                        // Referencias a los botones
-                        val btnIniciar = findViewById<Button>(R.id.btn_iniciar_test)
-                        val btnResultados = findViewById<Button>(R.id.btn_ver_resultados)
-
-                        // Navegar a test
-                        btnIniciar.setOnClickListener {
-                            navController.navigate(BottomNavItem.Test.route)
-                        }
-
-                        // Navegar a resultados (o carreras)
-                        btnResultados.setOnClickListener {
-                            navController.navigate(BottomNavItem.Carreras.route)
-                        }
+                        findViewById<XmlButton>(R.id.btn_iniciar_test).setOnClickListener { navController.navigate(BottomNavItem.Test.route) }
+                        findViewById<XmlButton>(R.id.btn_ver_resultados).setOnClickListener { navController.navigate(BottomNavItem.Carreras.route) }
                     }
             },
             modifier = Modifier.fillMaxSize()
         )
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
