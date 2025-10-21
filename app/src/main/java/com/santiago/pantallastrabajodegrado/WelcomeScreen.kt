@@ -35,6 +35,12 @@ import androidx.navigation.compose.*
 import com.google.firebase.auth.FirebaseAuth
 import com.santiago.pantallastrabajodegrado.ui.EncuestaScreenCompose
 import com.santiago.pantallastrabajodegrado.ui.theme.PantallasTrabajoDeGradoTheme
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.*
+
+
 
 // --- COLORES UNIFICADOS DEL TEMA ---
 private val azulOscuro = Color(0xFF074384)
@@ -137,7 +143,7 @@ fun AppNavHost(navController: NavHostController, paddingValues: PaddingValues) {
             EncuestaScreenCompose(onBack = { navController.popBackStack() })
         }
         composable(BottomNavItem.Carreras.route) {
-            CarrerasScreen(onBack = { navController.popBackStack() })
+            CarrerasScreen(navController = navController, onBack = { navController.popBackStack() })
         }
         composable(BottomNavItem.Perfil.route) {
             val context = LocalContext.current
@@ -151,6 +157,17 @@ fun AppNavHost(navController: NavHostController, paddingValues: PaddingValues) {
             )
         }
         composable("results") { ResultsScreen(onBack = { navController.popBackStack() }) }
+
+        composable("program/{index}") { backStackEntry ->
+            val indexArg = backStackEntry.arguments?.getString("index")?.toIntOrNull() ?: 0
+            val programa = programasDeEjemplo.getOrNull(indexArg)
+            if (programa != null) {
+                ProgramDetailScreenCompose(programa = programa, navController = navController)
+            } else {
+                // opcional: mostrar fallback / regresar
+                LaunchedEffect(Unit) { navController.popBackStack() }
+            }
+        }
     }
 }
 
@@ -298,7 +315,7 @@ fun ProgramaCardMockup(
 
 // --- NUEVA PANTALLA DE CARRERAS ---
 @Composable
-fun CarrerasScreen(onBack: () -> Unit) {
+fun CarrerasScreen(navController: NavHostController, onBack: () -> Unit) {
     ScreenWithTopBar(
         showLogo = false,
         title = "Programas de pregrado",
@@ -313,10 +330,12 @@ fun CarrerasScreen(onBack: () -> Unit) {
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(programasDeEjemplo) { programa ->
+            itemsIndexed(programasDeEjemplo) { index, programa ->
                 ProgramaCardMockup(
                     programa = programa,
-                    onVerMas = { /* TODO: navegar al detalle */ }
+                    onVerMas = {
+                        navController.navigate("program/$index")
+                    }
                 )
             }
             item { Spacer(modifier = Modifier.height(80.dp)) }
