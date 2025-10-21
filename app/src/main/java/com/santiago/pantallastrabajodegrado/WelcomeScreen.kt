@@ -133,7 +133,7 @@ fun AppBottomNavigation(navController: NavController) {
 fun AppNavHost(navController: NavHostController, paddingValues: PaddingValues) {
     NavHost(navController, startDestination = BottomNavItem.Home.route, modifier = Modifier.padding(paddingValues)) {
         composable(BottomNavItem.Home.route) { MainContent(navController) }
-        composable(BottomNavItem.Test.route) { TestVocacionalScreen(onBack = { navController.popBackStack() }) }
+        composable(BottomNavItem.Test.route) { TestVocacionalScreen(navController = navController, onBack = { navController.popBackStack() }) }
         composable(BottomNavItem.Carreras.route) {
             Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(colors = listOf(azulOscuro, azulClaro))), contentAlignment = Alignment.Center) {
                 Text("Pantalla de Carreras", color = Color.White)
@@ -142,9 +142,10 @@ fun AppNavHost(navController: NavHostController, paddingValues: PaddingValues) {
         composable(BottomNavItem.Perfil.route) {
             val context = LocalContext.current
             PerfilScreen(
+                onBack = { navController.popBackStack() },
                 navController = navController, // <- pásalo desde MainActivity
                 onSignOut = {
-                    val intent = Intent(context, LoginActivity::class.java)
+                    val intent = Intent(context, HomeActivity::class.java)
                     context.startActivity(intent)
                 }
             )
@@ -153,11 +154,22 @@ fun AppNavHost(navController: NavHostController, paddingValues: PaddingValues) {
         composable("results") {
             ResultsScreen(onBack = { navController.popBackStack() })
         }
+
+        composable("encuesta") {
+            EncuestaScreen(onBack = { navController.popBackStack() })
+        }
+
     }
 }
 
 @Composable
-fun EncuestaScreen() {
+fun EncuestaScreen( onBack: () -> Unit) {
+    ScreenWithTopBar(
+        showLogo = false,
+        title = "Test Vocacional",
+        navBack = { onBack() },
+        onNotification = { }
+    ) {
     AndroidView(
         factory = { context ->
             val view = LayoutInflater.from(context).inflate(R.layout.activity_encuesta, null, false)
@@ -168,13 +180,14 @@ fun EncuestaScreen() {
             view
         },
         modifier = Modifier.fillMaxSize()
-    )
+    )}
 }
 
 @Composable
 fun PerfilScreen(
     navController: NavController, // <- pásalo desde MainActivity
-    onSignOut: () -> Unit
+    onSignOut: () -> Unit,
+    onBack: () -> Unit
 ) {
     val context = LocalContext.current
     val user = FirebaseAuth.getInstance().currentUser
@@ -182,7 +195,7 @@ fun PerfilScreen(
     ScreenWithTopBar(
         showLogo = false,
         title = "Mi Perfil",
-        navBack = { },
+        navBack = { onBack() },
         onNotification = { }
     ) {
         AndroidView(
@@ -234,7 +247,7 @@ fun ResultsScreen(onBack: () -> Unit) {
 
 
 @Composable
-fun TestVocacionalScreen(onBack: () -> Unit) {
+fun TestVocacionalScreen(navController: NavController, onBack: () -> Unit) {
     ScreenWithTopBar(
         showLogo = false,
         title = "Test Vocacional",
@@ -245,6 +258,12 @@ fun TestVocacionalScreen(onBack: () -> Unit) {
             factory = { context ->
                 LayoutInflater.from(context)
                     .inflate(R.layout.activity_test_vocacional, null, false)
+                    .apply {
+                        val btnSiguiente = findViewById<Button>(R.id.btn_siguiente)
+                        btnSiguiente.setOnClickListener {
+                            navController.navigate("encuesta") // ✅ ahora sí funciona
+                        }
+                    }
             },
             modifier = Modifier.fillMaxSize()
         )
