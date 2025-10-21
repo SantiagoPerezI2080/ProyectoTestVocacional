@@ -14,33 +14,6 @@
         android:background="#051F3A"
         tools:context=".EncuestaActivity">
 
-        <!-- Encabezado -->
-        <ImageView
-            android:id="@+id/ivNotifications"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginEnd="16dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/icon_notificacion"
-            app:layout_constraintBottom_toBottomOf="@id/tvTitle"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tvTitle"
-            app:tint="@android:color/white"
-            android:contentDescription="Notificaciones" />
-
-        <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="TEST VOCACIONAL"
-            android:textColor="@android:color/white"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@id/ivNotifications"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintHorizontal_bias="0.5" /> <!-- Centrado si hay espacio -->
 
 
         <!-- Contenido Deslizable (ScrollView) -->
@@ -52,7 +25,8 @@
             android:layout_marginBottom="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvTitle"
+            app:layout_constraintTop_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <LinearLayout
