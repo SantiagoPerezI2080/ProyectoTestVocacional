@@ -10,8 +10,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import androidx.navigation.compose.currentBackStackEntryAsState
-
 import com.google.firebase.auth.FirebaseAuth
 import com.santiago.pantallastrabajodegrado.ui.main.MainContent
 import com.santiago.pantallastrabajodegrado.ui.survey.EncuestaScreenCompose
@@ -21,6 +19,9 @@ import com.santiago.pantallastrabajodegrado.ui.profile.ResultsScreen
 import com.santiago.pantallastrabajodegrado.data.model.programasDeEjemplo
 import com.santiago.pantallastrabajodegrado.ui.carreras.ProgramDetailScreenCompose
 import com.santiago.pantallastrabajodegrado.ui.auth.LoginActivity
+import com.santiago.pantallastrabajodegrado.ui.survey.KuderTestScreen
+import com.santiago.pantallastrabajodegrado.ui.survey.KuderResultsScreen
+import com.santiago.pantallastrabajodegrado.ui.survey.KuderIntroScreen
 
 @Composable
 fun NavGraph(startDestination: String = "home") {
@@ -31,27 +32,29 @@ fun NavGraph(startDestination: String = "home") {
 @Composable
 fun AppNavGraph(navController: NavHostController, startDestination: String = "home") {
     NavHost(navController = navController, startDestination = startDestination) {
+
+        // Home / Welcome (XML embedded in Compose)
         composable("home") {
             MainContent(navController = navController)
         }
 
+        // Encuesta (original)
         composable("test") {
             EncuestaScreenCompose(onBack = { navController.popBackStack() })
         }
 
+        // Carreras (lista)
         composable("carreras") {
             CarrerasScreen(navController = navController, onBack = { navController.popBackStack() })
         }
 
+        // Perfil — con manejo de cierre de sesión que lanza LoginActivity y limpia la pila
         composable("perfil") {
-            // Usamos LocalContext para lanzar LoginActivity cuando el usuario cierre sesión
             val context = LocalContext.current
             PerfilScreen(
                 navController = navController,
                 onSignOut = {
-                    // cerrar sesión en Firebase
                     FirebaseAuth.getInstance().signOut()
-                    // Lanzar LoginActivity y limpiar la pila para que no se pueda volver con "Atrás"
                     val intent = Intent(context, LoginActivity::class.java).apply {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     }
@@ -61,10 +64,12 @@ fun AppNavGraph(navController: NavHostController, startDestination: String = "ho
             )
         }
 
+        // Pantalla de resultados simple (XML o Compose)
         composable("results") {
             ResultsScreen(onBack = { navController.popBackStack() })
         }
 
+        // Detalle de programa con argumento index
         composable(
             route = "program/{index}",
             arguments = listOf(navArgument("index") { type = NavType.IntType })
@@ -76,6 +81,21 @@ fun AppNavGraph(navController: NavHostController, startDestination: String = "ho
             } else {
                 LaunchedEffect(Unit) { navController.popBackStack() }
             }
+        }
+
+        // Kuder: introducción / transición antes del test
+        composable("kuder_intro") {
+            KuderIntroScreen(navController = navController)
+        }
+
+        // Kuder: pantalla de test
+        composable("kuder_test") {
+            KuderTestScreen(navController = navController)
+        }
+
+        // Kuder: pantalla de resultados (con onBack)
+        composable("kuder_results") {
+            KuderResultsScreen(onBack = { navController.popBackStack() })
         }
     }
 }

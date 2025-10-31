@@ -19,13 +19,12 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.NavGraph.Companion.findStartDestination
 
 // colores
-private val azulBarra = Color(0xFF0F50A8)
-private val amarilloAcento = Color(0xFFFFC225)
+private val azulBarra = Color(0xFF022047)
+private val amarilloAcento = Color(0xFFE27131)
 
-// Sealed class para items
 sealed class BottomNavItem(val route: String, val title: String, val icon: Int) {
     object Home : BottomNavItem("home", "Inicio", com.santiago.pantallastrabajodegrado.R.drawable.icon_house)
-    object Test : BottomNavItem("test", "Test", com.santiago.pantallastrabajodegrado.R.drawable.icon_testofi)
+    object Test : BottomNavItem("kuder_intro", "Test", com.santiago.pantallastrabajodegrado.R.drawable.icon_testofi)
     object Carreras : BottomNavItem("carreras", "Carreras", com.santiago.pantallastrabajodegrado.R.drawable.iccon_carrerasofi)
     object Perfil : BottomNavItem("perfil", "Perfil", com.santiago.pantallastrabajodegrado.R.drawable.icon_perfil)
 }

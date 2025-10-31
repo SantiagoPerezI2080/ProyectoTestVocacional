@@ -21,46 +21,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import com.santiago.pantallastrabajodegrado.data.model.Program
+import com.santiago.pantallastrabajodegrado.ui.components.ScreenWithTopBar
 
 @Composable
 fun ProgramDetailScreenCompose(program: Program, navController: NavController) {
     // Scaffold con TopAppBar
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        program.titulo,
-                        maxLines = 1,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = Color.White
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            painter = painterResource(id = com.santiago.pantallastrabajodegrado.R.drawable.icon_backofi),
-                            contentDescription = "Atrás",
-                            tint = Color.White
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { /* notificaciones */ }) {
-                        Icon(
-                            painter = painterResource(id = com.santiago.pantallastrabajodegrado.R.drawable.icon_notificacion),
-                            contentDescription = "noti",
-                            tint = Color.White
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color(0xFF073552),
-                    titleContentColor = Color.White
-                )
-            )
-        },
-        containerColor = Color(0xFF071428)
+    ScreenWithTopBar(
+        showLogo = false,
+        title = program.titulo,
+        navBack = { navController.popBackStack() },
+        //onNotification = { /* acciones si las hay */ }
     ) { innerPadding ->
         Column(
             modifier = Modifier

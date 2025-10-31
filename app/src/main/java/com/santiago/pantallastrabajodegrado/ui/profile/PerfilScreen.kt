@@ -19,7 +19,6 @@ fun PerfilScreen(navController: NavController, onSignOut: () -> Unit, onBack: ()
     ScreenWithTopBar(
         showLogo = false,
         title = "Información de usuario",
-
         onNotification = null
     ) { innerPadding ->
         AndroidView(
