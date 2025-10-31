@@ -1,7 +1,6 @@
 @file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 package com.santiago.pantallastrabajodegrado.ui.survey
 
-import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,15 +18,18 @@ import androidx.compose.ui.unit.sp
 import com.santiago.pantallastrabajodegrado.viewmodel.KuderViewModel
 import kotlin.math.roundToInt
 import android.util.Log
+import com.santiago.pantallastrabajodegrado.ui.components.ScreenWithTopBar
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun KuderResultsScreen(
     onBack: () -> Unit = {},
-    vm: KuderViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    vm: KuderViewModel = viewModel()
 ) {
-    val activity = LocalContext.current as ComponentActivity
-    val vm: KuderViewModel = androidx.lifecycle.viewmodel.compose.viewModel(activity)
-
+    // Debug log con las selecciones
     LaunchedEffect(Unit) {
         Log.d("KuderResultsScreen", "Selecciones en results (vm): ${vm.selecciones.value}")
     }
@@ -35,11 +37,12 @@ fun KuderResultsScreen(
     val counts = vm.calcularConteoPorArea()
     val total = counts.values.sum().takeIf { it > 0 } ?: 1
 
-    // 🔹 Mapeo mejorado de áreas → carreras
+    // Mapeo áreas -> carreras (ajústalo si quieres)
     val areaToCarrera = mapOf(
         "EXTERIOR" to listOf(
             "INGENIERÍA AMBIENTAL Y DE SANEAMIENTO",
-            "INGENIERÍA CIVIL"
+            "INGENIERÍA CIVIL",
+            "ENTRENAMIENTO DEPORTIVO"
         ),
         "MECANICA" to listOf(
             "INGENIERÍA ELECTRÓNICA",
@@ -47,7 +50,9 @@ fun KuderResultsScreen(
         ),
         "CALCULO" to listOf(
             "MATEMÁTICAS APLICADAS EN CIENCIA DE DATOS",
-            "INGENIERÍA DE SOFTWARE Y COMPUTACIÓN"
+            "INGENIERÍA DE SOFTWARE Y COMPUTACIÓN",
+            "INGENIERÍA AMBIENTAL Y DE SANEAMIENTO",
+            "INGENIERÍA CIVIL"
         ),
         "CIENTIFICA" to listOf(
             "INGENIERÍA DE SOFTWARE Y COMPUTACIÓN",
@@ -56,7 +61,8 @@ fun KuderResultsScreen(
         "PERSUASIVA" to listOf(
             "ADMINISTRACIÓN DE EMPRESAS",
             "FINANZAS Y NEGOCIOS INTERNACIONALES",
-            "GOBIERNO Y RELACIONES INTERNACIONALES"
+            "GOBIERNO Y RELACIONES INTERNACIONALES",
+            "DERECHO"
         ),
         "ARTISTICA" to listOf(
             "INGENIERÍA DE SOFTWARE Y COMPUTACIÓN",
@@ -71,15 +77,17 @@ fun KuderResultsScreen(
         ),
         "SERVICIO" to listOf(
             "LICENCIATURA EN EDUCACIÓN INFANTIL",
-            "ENTRENAMIENTO DEPORTIVO"
+            "ENTRENAMIENTO DEPORTIVO",
+            "DERECHO"
         ),
         "OFICINA" to listOf(
             "CONTADURÍA PÚBLICA",
-            "ADMINISTRACIÓN DE EMPRESAS"
+            "ADMINISTRACIÓN DE EMPRESAS",
+            "DERECHO"
         )
     )
 
-    // 🔹 Calcular score total por carrera
+    // score por carrera
     val careerScores = mutableMapOf<String, Int>()
     counts.forEach { (area, cnt) ->
         areaToCarrera[area]?.forEach { carrera ->
@@ -87,35 +95,22 @@ fun KuderResultsScreen(
         }
     }
 
-    // 🔹 Calcular porcentaje
+    // porcentajes (sobre el total de respuestas)
     val careerPercents = careerScores.mapValues { (_, v) ->
         (v.toDouble() / total.toDouble()) * 100.0
     }
 
-    // 🔹 Tomar solo las 3 mejores y normalizar para que sumen 100 %
-    val top3 = careerPercents.toList().sortedByDescending { it.second }.take(3)
+    // Top 3 y normalización para que sumen 100% entre ellas
+    val ordered = careerPercents.toList().sortedByDescending { it.second }
+    val top3 = ordered.take(3)
     val totalTop = top3.sumOf { it.second }.takeIf { it > 0 } ?: 1.0
     val normalizedTop3 = top3.associate { it.first to (it.second / totalTop * 100.0) }
 
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("Resultados Kuder", color = Color.White) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            painter = painterResource(id = com.santiago.pantallastrabajodegrado.R.drawable.icon_backofi),
-                            contentDescription = "Atrás",
-                            tint = Color.White
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color(0xFF0F2143)
-                )
-            )
-        },
-        containerColor = Color(0xFF0A1E3D)
+    ScreenWithTopBar(
+        showLogo = false,
+        title = "TEST VOCACIONAL",
+        navBack = { onBack() },
+        //onNotification = { /* nada por ahora */ }
     ) { inner ->
         Column(
             modifier = Modifier
@@ -126,11 +121,11 @@ fun KuderResultsScreen(
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                "Tus 3 carreras más recomendadas",
-                style = MaterialTheme.typography.titleLarge.copy(fontSize = 22.sp),
+                "¡Has completado el test! \n¡Felicidades! Según tus respuestas, te recomendamos los siguientes programas:",
+                style = MaterialTheme.typography.titleLarge.copy(fontSize = 16.sp),
                 color = Color.White
             )
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(18.dp))
 
             if (normalizedTop3.isEmpty()) {
                 Text(
@@ -143,7 +138,7 @@ fun KuderResultsScreen(
                         "${idx + 1}. $career",
                         color = Color.White,
                         fontWeight = FontWeight.SemiBold,
-                        fontSize = 18.sp
+                        fontSize = 14.sp
                     )
                     Spacer(Modifier.height(6.dp))
                     Box(
@@ -152,7 +147,7 @@ fun KuderResultsScreen(
                             .height(22.dp)
                             .background(Color(0xFF2D2D2D), RoundedCornerShape(8.dp))
                     ) {
-                        val fraction = (percent / 100.0).toFloat()
+                        val fraction = (percent / 100.0).coerceIn(0.0, 1.0).toFloat()
                         Box(
                             modifier = Modifier
                                 .fillMaxHeight()
