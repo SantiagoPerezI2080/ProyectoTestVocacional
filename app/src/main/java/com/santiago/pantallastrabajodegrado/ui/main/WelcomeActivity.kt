@@ -1,4 +1,4 @@
-package com.santiago.pantallastrabajodegrado
+package com.santiago.pantallastrabajodegrado.ui.main
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -9,9 +9,7 @@ class WelcomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Usamos setContent para cargar nuestra pantalla de Jetpack Compose
         setContent {
-            // Envolvemos la pantalla principal con nuestro tema personalizado
             PantallasTrabajoDeGradoTheme {
                 WelcomeScreen()
             }

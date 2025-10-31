@@ -1,9 +1,7 @@
-package com.santiago.pantallastrabajodegrado
+package com.santiago.pantallastrabajodegrado.ui.profile
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.santiago.pantallastrabajodegrado.databinding.ActivityProfileBinding
@@ -23,31 +21,27 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun setupUi() {
-        // Clicks de las tarjetas
         binding.optionMessages.setOnClickListener {
-            // Navegar a mensajes
+            // Navegar a mensajes (implementar)
         }
 
         binding.optionResults.setOnClickListener {
-            // Navegar a resultados
             val intent = Intent(this, ResultsActivity::class.java)
             startActivity(intent)
         }
 
         binding.optionOther.setOnClickListener {
-            // Navegar a otra pantalla
+            // Navegar a otra pantalla (implementar)
         }
 
         binding.btnUpdate.setOnClickListener {
-            // Actualizar datos
+            // Actualizar datos (implementar)
         }
 
         binding.btnSignOut.setOnClickListener {
             signOut()
         }
     }
-
-
 
     private fun loadUserInfo() {
         val user = auth.currentUser
@@ -65,10 +59,9 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun redirectToLogin() {
-        val i = Intent(this, LoginActivity::class.java)
+        val i = Intent(this, com.santiago.pantallastrabajodegrado.ui.auth.LoginActivity::class.java)
         i.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(i)
         finish()
     }
 }
-

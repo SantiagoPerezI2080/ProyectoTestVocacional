@@ -1,11 +1,10 @@
-package com.santiago.pantallastrabajodegrado
+package com.santiago.pantallastrabajodegrado.ui.auth
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.util.Patterns // Importar Patterns para validación de email
-import android.view.View
+import android.util.Patterns
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.santiago.pantallastrabajodegrado.databinding.ActivityLoginBinding
+import com.santiago.pantallastrabajodegrado.ui.main.WelcomeActivity
 
 class LoginActivity : AppCompatActivity() {
 
@@ -52,7 +52,6 @@ class LoginActivity : AppCompatActivity() {
             }
             binding.etEmail.error = null
 
-
             if (password.isEmpty()) {
                 binding.etContrasena.error = "Ingrese su contraseña."
                 binding.etContrasena.requestFocus()
@@ -79,11 +78,7 @@ class LoginActivity : AppCompatActivity() {
                                 errorMessage = "Usuario no encontrado."
                             }
                         }
-                        Toast.makeText(
-                            baseContext,
-                            errorMessage,
-                            Toast.LENGTH_LONG,
-                        ).show()
+                        Toast.makeText(baseContext, errorMessage, Toast.LENGTH_LONG).show()
                     }
                 }
         }
@@ -93,7 +88,6 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // Listener para "Olvidó su contraseña"
         binding.tvOlvidoContrasena.setOnClickListener {
             val email = binding.etEmail.text.toString().trim()
 
@@ -103,7 +97,7 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this, "Por favor, ingrese su email primero.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            binding.etEmail.error = null // Limpiar error si el email no está vacío
+            binding.etEmail.error = null
 
             if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 binding.etEmail.error = "Formato de correo inválido para restablecer."
@@ -111,8 +105,7 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this, "Por favor, ingrese un correo electrónico válido.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            binding.etEmail.error = null // Limpiar error si el email es válido
-
+            binding.etEmail.error = null
 
             auth.sendPasswordResetEmail(email)
                 .addOnCompleteListener { task ->

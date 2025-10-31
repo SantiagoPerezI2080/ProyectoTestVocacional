@@ -1,12 +1,15 @@
-package com.santiago.pantallastrabajodegrado // Revisa tu nombre de paquete
+package com.santiago.pantallastrabajodegrado.ui.survey
 
 import android.os.Bundle
-import android.util.Log // Importar Log
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.santiago.pantallastrabajodegrado.databinding.ActivityEncuestaBinding
+
+// Import actualizado a la nueva ubicación de la clase Encuesta
+import com.santiago.pantallastrabajodegrado.ui.survey.Encuesta
 
 class EncuestaActivity : AppCompatActivity() {
 
@@ -20,7 +23,6 @@ class EncuestaActivity : AppCompatActivity() {
         binding = ActivityEncuestaBinding.inflate(layoutInflater)
         setContentView(binding.root)
         Log.d("EncuestaActivityLog", "onCreate - View Binding realizado, ContentView seteado.")
-
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             Log.d("EncuestaActivityLog", "onCreate - Aplicando WindowInsets.")
@@ -36,7 +38,6 @@ class EncuestaActivity : AppCompatActivity() {
             btnEnviar = binding.btnEnviar
         )
         Log.d("EncuestaActivityLog", "onCreate - Después de crear instancia de Encuesta (lógica).")
-
 
         logicaEncuesta.mostrarEncuestaEnUI()
         Log.d("EncuestaActivityLog", "onCreate - Después de llamar a logicaEncuesta.mostrarEncuestaEnUI().")

@@ -1,4 +1,4 @@
-package com.santiago.pantallastrabajodegrado.ui
+package com.santiago.pantallastrabajodegrado.ui.survey
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.santiago.pantallastrabajodegrado.data.ApiPregunta
+import com.santiago.pantallastrabajodegrado.viewmodel.EncuestaViewModel
 
 private val FondoAzul = Color(0xFF0A1E3D)
 private val AzulBarra = Color(0xFF0F2143)
@@ -79,21 +80,21 @@ fun EncuestaScreenCompose(
         }
     ) { inner ->
         when (val state = uiState) {
-            is EncuestaUiState.Loading -> Box(
+            is com.santiago.pantallastrabajodegrado.viewmodel.EncuestaUiState.Loading -> Box(
                 modifier = Modifier
                     .padding(inner)
                     .fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) { CircularProgressIndicator() }
 
-            is EncuestaUiState.Error -> Box(
+            is com.santiago.pantallastrabajodegrado.viewmodel.EncuestaUiState.Error -> Box(
                 modifier = Modifier
                     .padding(inner)
                     .fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) { Text(state.message, color = Color.White) }
 
-            is EncuestaUiState.Success -> {
+            is com.santiago.pantallastrabajodegrado.viewmodel.EncuestaUiState.Success -> {
                 LazyColumn(
                     modifier = Modifier
                         .padding(inner)
@@ -108,7 +109,7 @@ fun EncuestaScreenCompose(
                             onSeleccion = { opcionId -> vm.seleccionar(p.id, opcionId) }
                         )
                     }
-                    item { Spacer(Modifier.height(80.dp)) } 
+                    item { Spacer(Modifier.height(80.dp)) }
                 }
             }
         }

@@ -1,4 +1,4 @@
-package com.santiago.pantallastrabajodegrado
+package com.santiago.pantallastrabajodegrado.ui.auth
 
 import android.content.Intent
 import android.os.Bundle
@@ -20,7 +20,6 @@ class RegisterActivity : AppCompatActivity() {
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Inicializar Firebase Auth
         auth = Firebase.auth
 
         binding.btnRegistrarse.setOnClickListener {
@@ -32,7 +31,6 @@ class RegisterActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Validaciones de contraseña
             if (password.length < 6) {
                 binding.etContrasena.error = "Mínimo 6 caracteres."
                 binding.etContrasena.requestFocus()
@@ -53,32 +51,19 @@ class RegisterActivity : AppCompatActivity() {
                 Toast.makeText(this, "La contraseña debe contener al menos un número.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            // Si todas las validaciones de contraseña pasan, limpiar el error
             binding.etContrasena.error = null
-
 
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
-                        // Registro exitoso
                         Log.d("RegisterActivity", "createUserWithEmail:success")
-                        Toast.makeText(
-                            baseContext,
-                            "Registro exitoso.",
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        // Navegar a LoginActivity o MainActivity
+                        Toast.makeText(baseContext, "Registro exitoso.", Toast.LENGTH_SHORT).show()
                         val intent = Intent(this, LoginActivity::class.java)
                         startActivity(intent)
-                        finish() // Finalizar RegisterActivity para que el usuario no pueda volver con el botón "atrás"
+                        finish()
                     } else {
-                        // Si el registro falla, mostrar un mensaje al usuario.
                         Log.w("RegisterActivity", "createUserWithEmail:failure", task.exception)
-                        Toast.makeText(
-                            baseContext,
-                            "Fallo el registro: ${task.exception?.message}",
-                            Toast.LENGTH_LONG,
-                        ).show()
+                        Toast.makeText(baseContext, "Fallo el registro: ${task.exception?.message}", Toast.LENGTH_LONG).show()
                     }
                 }
         }

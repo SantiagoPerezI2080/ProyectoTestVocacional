@@ -1,4 +1,4 @@
-package com.santiago.pantallastrabajodegrado.ui
+package com.santiago.pantallastrabajodegrado.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

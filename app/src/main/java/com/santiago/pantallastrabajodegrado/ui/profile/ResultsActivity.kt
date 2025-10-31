@@ -1,4 +1,4 @@
-package com.santiago.pantallastrabajodegrado
+package com.santiago.pantallastrabajodegrado.ui.profile
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -12,9 +12,5 @@ class ResultsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityResultsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-
     }
-
-
 }

@@ -1,7 +1,7 @@
-package com.santiago.pantallastrabajodegrado // Revisa tu nombre de paquete
+package com.santiago.pantallastrabajodegrado.ui.survey
 
 import android.content.Context
-import android.util.Log // Importar Log
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -12,21 +12,17 @@ import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import com.santiago.pantallastrabajodegrado.R
 import com.santiago.pantallastrabajodegrado.databinding.ItemPreguntaBinding
+import com.santiago.pantallastrabajodegrado.data.model.Pregunta
+import com.santiago.pantallastrabajodegrado.data.model.OpcionRespuesta
 
-// Clases de datos
-data class OpcionRespuesta(
-    val texto: String,
-    val idOpcion: Int,
-    var esSeleccionada: Boolean = false
-)
-
-data class Pregunta(
-    val idPregunta: Int,
-    val textoPregunta: String,
-    val opciones: List<OpcionRespuesta>
-)
-
+/**
+ * Clase encargada de renderizar la encuesta usando vistas tradicionales (XML + ViewBinding).
+ * Se dejó intacta la lógica original; solo se actualizó el package y las imports.
+ *
+ * Uso esperado: crear una instancia en una Activity que tenga un LinearLayout contenedor y un Button btnEnviar.
+ */
 class Encuesta(
     private val context: Context,
     private val contenedorPreguntasLayout: LinearLayout,
@@ -47,7 +43,7 @@ class Encuesta(
 
     private fun cargarPreguntasDeEjemplo() {
         Log.d("EncuestaLog", "cargarPreguntasDeEjemplo() INICIO")
-        listaDePreguntas.clear() // Asegurar que está vacía si se llama múltiples veces (aunque aquí solo en init)
+        listaDePreguntas.clear()
 
         listaDePreguntas.add(
             Pregunta(
@@ -61,8 +57,6 @@ class Encuesta(
                 )
             )
         )
-        Log.d("EncuestaLog", "Pregunta 1 añadida. Total: ${listaDePreguntas.size}")
-
         listaDePreguntas.add(
             Pregunta(
                 idPregunta = 2,
@@ -75,8 +69,6 @@ class Encuesta(
                 )
             )
         )
-        Log.d("EncuestaLog", "Pregunta 2 añadida. Total: ${listaDePreguntas.size}")
-
         listaDePreguntas.add(
             Pregunta(
                 idPregunta = 3,
@@ -89,7 +81,6 @@ class Encuesta(
                 )
             )
         )
-        Log.d("EncuestaLog", "Pregunta 3 añadida. Total: ${listaDePreguntas.size}")
         Log.d("EncuestaLog", "cargarPreguntasDeEjemplo() FIN. Total preguntas: ${listaDePreguntas.size}")
     }
 
@@ -97,7 +88,7 @@ class Encuesta(
         Log.d("EncuestaLog", "Encuesta.mostrarEncuestaEnUI() llamado. Total preguntas al renderizar: ${listaDePreguntas.size}")
         if (listaDePreguntas.isEmpty()) {
             Log.e("EncuestaLog", "¡Lista de preguntas está VACÍA al intentar renderizar!")
-            Toast.makeText(context, "No hay preguntas para mostrar.", Toast.LENGTH_LONG).show() // Feedback al usuario
+            Toast.makeText(context, "No hay preguntas para mostrar.", Toast.LENGTH_LONG).show()
             return
         }
         renderizarPreguntas()
@@ -107,33 +98,22 @@ class Encuesta(
         Log.d("EncuestaLog", "renderizarPreguntas() INICIO. Hijos actuales del contenedor: ${contenedorPreguntasLayout.childCount}")
         val inflater = LayoutInflater.from(context)
 
-        // Estrategia para manejar el botón "Enviar" que está DENTRO del contenedor de preguntas
-        // y debe permanecer al final.
-        // 1. Guarda una referencia al botón si existe.
-        // 2. Limpia TODAS las vistas del contenedor.
-        // 3. Añade las preguntas.
-        // 4. Vuelve a añadir el botón al final.
-
         var vistaBotonEnviar: View? = null
-        // Buscar el botón por su ID dentro del contenedor
         for (i in 0 until contenedorPreguntasLayout.childCount) {
             val child = contenedorPreguntasLayout.getChildAt(i)
-            if (child.id == R.id.btnEnviar) { // Asumiendo que el botón tiene el ID btnEnviar
+            if (child.id == R.id.btnEnviar) {
                 vistaBotonEnviar = child
                 Log.d("EncuestaLog", "Botón Enviar encontrado en el contenedor.")
                 break
             }
         }
-        // Si se encontró, quitarlo temporalmente para poder limpiar y re-añadir
         if (vistaBotonEnviar != null) {
             contenedorPreguntasLayout.removeView(vistaBotonEnviar)
             Log.d("EncuestaLog", "Botón Enviar quitado temporalmente.")
         }
 
-        // Limpiar todas las vistas que podrían ser preguntas anteriores
         contenedorPreguntasLayout.removeAllViews()
         Log.d("EncuestaLog", "Contenedor limpiado. Hijos: ${contenedorPreguntasLayout.childCount}")
-
 
         for (pregunta in listaDePreguntas) {
             Log.d("EncuestaLog", "Renderizando pregunta ID: ${pregunta.idPregunta} - ${pregunta.textoPregunta.take(30)}...")
@@ -183,7 +163,6 @@ class Encuesta(
             Log.d("EncuestaLog", "Vista de pregunta '${pregunta.textoPregunta.take(15)}...' añadida. Hijos del contenedor: ${contenedorPreguntasLayout.childCount}")
         }
 
-        // Volver a añadir el botón "Enviar" al final si existía
         if (vistaBotonEnviar != null) {
             contenedorPreguntasLayout.addView(vistaBotonEnviar)
             Log.d("EncuestaLog", "Botón Enviar re-añadido al final. Hijos: ${contenedorPreguntasLayout.childCount}")
@@ -209,6 +188,6 @@ class Encuesta(
             sb.append("Opción: ${opcionSeleccionada?.texto?.take(30)}...\n\n")
         }
         Log.d("EncuestaLog", "Respuestas procesadas:\n$sb")
-        Toast.makeText(context, sb.toString(), Toast.LENGTH_LONG).show() // Muestra un Toast largo con las respuestas
+        Toast.makeText(context, sb.toString(), Toast.LENGTH_LONG).show()
     }
 }

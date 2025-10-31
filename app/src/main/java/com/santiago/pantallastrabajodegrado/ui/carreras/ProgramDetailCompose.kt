@@ -1,5 +1,5 @@
 @file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
-package com.santiago.pantallastrabajodegrado
+package com.santiago.pantallastrabajodegrado.ui.carreras
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,16 +20,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
+import com.santiago.pantallastrabajodegrado.data.model.Program
 
 @Composable
-fun ProgramDetailScreenCompose(programa: Programa, navController: NavController) {
+fun ProgramDetailScreenCompose(program: Program, navController: NavController) {
     // Scaffold con TopAppBar
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        programa.titulo,
+                        program.titulo,
                         maxLines = 1,
                         style = MaterialTheme.typography.titleMedium,
                         color = Color.White
@@ -38,7 +39,7 @@ fun ProgramDetailScreenCompose(programa: Programa, navController: NavController)
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
-                            painter = painterResource(id = R.drawable.icon_backofi),
+                            painter = painterResource(id = com.santiago.pantallastrabajodegrado.R.drawable.icon_backofi),
                             contentDescription = "Atrás",
                             tint = Color.White
                         )
@@ -47,7 +48,7 @@ fun ProgramDetailScreenCompose(programa: Programa, navController: NavController)
                 actions = {
                     IconButton(onClick = { /* notificaciones */ }) {
                         Icon(
-                            painter = painterResource(id = R.drawable.icon_notificacion),
+                            painter = painterResource(id = com.santiago.pantallastrabajodegrado.R.drawable.icon_notificacion),
                             contentDescription = "noti",
                             tint = Color.White
                         )
@@ -72,8 +73,8 @@ fun ProgramDetailScreenCompose(programa: Programa, navController: NavController)
             // Row superior: imagen + título grande a la derecha
             Row(modifier = Modifier.fillMaxWidth()) {
                 Image(
-                    painter = painterResource(id = programa.imagenRes),
-                    contentDescription = programa.titulo,
+                    painter = painterResource(id = program.imagenRes),
+                    contentDescription = program.titulo,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(120.dp)
@@ -89,13 +90,13 @@ fun ProgramDetailScreenCompose(programa: Programa, navController: NavController)
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = programa.titulo,
+                        text = program.titulo,
                         style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
                         color = Color.White
                     )
                     Spacer(Modifier.height(6.dp))
                     Text(
-                        text = programa.duracion,
+                        text = program.duracion,
                         style = MaterialTheme.typography.bodySmall,
                         color = Color(0xFFBFD7E6)
                     )
@@ -120,11 +121,11 @@ fun ProgramDetailScreenCompose(programa: Programa, navController: NavController)
             // Cuadrícula con información
             Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    InfoCard(title = "DURACIÓN", value = programa.duracion, bg = Color(0xFFFFC1A1))
-                    InfoCard(title = "CRÉDITOS", value = "${programa.creditos}", bg = Color(0xFFD2B8FF))
+                    InfoCard(title = "DURACIÓN", value = program.duracion, bg = Color(0xFFFFC1A1))
+                    InfoCard(title = "CRÉDITOS", value = "${program.creditos}", bg = Color(0xFFD2B8FF))
                 }
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    InfoCard(title = "TÍTULO", value = programa.titulo, bg = Color(0xFF9EE8FF))
+                    InfoCard(title = "TÍTULO", value = program.titulo, bg = Color(0xFF9EE8FF))
                     InfoCard(title = "TIPO", value = "Pregrado", bg = Color(0xFF80E6B8))
                 }
             }
