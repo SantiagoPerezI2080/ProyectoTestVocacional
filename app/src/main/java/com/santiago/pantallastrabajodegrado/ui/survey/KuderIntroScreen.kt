@@ -26,22 +26,28 @@ fun KuderIntroScreen(navController: NavController) {
         showLogo = false,
         title = "TEST VOCACIONAL",
         navBack = { navController.popBackStack() },
-        //onNotification = { /* acciones si las hay */ }
     ) { innerPadding ->
 
-        // Gradiente de fondo
-        val grad = Brush.verticalGradient(listOf(Color(0xFF071428), Color(0xFF0A2A50)))
+        // 🔹 Gradiente de fondo general
+        val gradBackground = Brush.verticalGradient(
+            listOf(Color(0xFF054594), Color(0xFF02152E))
+        )
+
+        // 🔹 Gradiente interno del Card
+        val gradCard = Brush.verticalGradient(
+            listOf(Color(0xFF059DDE), Color(0xFF0571B9), Color(0xFF059DDE))
+        )
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding) // importante: respeta la top bar
-                .background(grad)
+                .padding(innerPadding)
+                .background(gradBackground)
         ) {
-            // 1) Contenido scrollable: ocupa todo el espacio disponible excepto el requerido por el botón
+            // 1️⃣ Contenido principal scrollable
             Column(
                 modifier = Modifier
-                    .weight(1f) // ocupa espacio disponible (deja al botón su propio espacio)
+                    .weight(1f)
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 16.dp, vertical = 12.dp),
@@ -50,70 +56,94 @@ fun KuderIntroScreen(navController: NavController) {
             ) {
                 Spacer(modifier = Modifier.height(4.dp))
 
+                // 🔹 Card con gradiente
                 Card(
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 8.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFF0F3A57))
+                    colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
-                    Column(
+                    Box(
                         modifier = Modifier
-                            .fillMaxWidth()
+                            .background(gradCard, shape = RoundedCornerShape(12.dp))
                             .padding(20.dp)
                     ) {
-                        Text(
-                            text = "Este test está diseñado para ser sencillo y directo.",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = Color(0xFFFFC225),
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Start
-                        )
-                        Spacer(Modifier.height(8.dp))
-                        Text(
-                            text = "Te haremos pares de actividades. Elige la actividad que más te guste en cada par. No hay respuestas buenas ni malas; responde con sinceridad.",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = Color.White
-                        )
-                        Spacer(Modifier.height(12.dp))
-                        Text(
-                            text = "Tómate tu tiempo y responde con honestidad. Cuando termines tendrás una recomendación de carreras.",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color(0xFFBFD7E6)
-                        )
+                        Column(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = "Este test está diseñado para ser sencillo y directo.",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Start
+                            )
+                            Spacer(Modifier.height(8.dp))
+                            Text(
+                                text = "Te haremos pares de actividades. Elige la actividad que más te guste en cada par. No hay respuestas buenas ni malas; responde con sinceridad.",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.White
+                            )
+                            Spacer(Modifier.height(12.dp))
+                            Text(
+                                text = "Tómate tu tiempo y responde con honestidad. Cuando termines tendrás una recomendación de carreras.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color(0xFFBFD7E6)
+                            )
+                        }
                     }
                 }
 
-                // opcional: más contenido explicativo
                 Spacer(modifier = Modifier.height(12.dp))
-
-                // agrega espacio al final del scroll para que no quede pegado a la parte inferior interna
+                Text(
+                    text = "El test tiene 45 pares de preguntas. ¡Responde con calma y sinceridad!",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color(0xFFBFD7E6),
+                    textAlign = TextAlign.Center
+                )
                 Spacer(modifier = Modifier.height(24.dp))
             }
 
-            // 2) Botón fijo en la parte inferior (fuera del scroll),
-            //    con navigationBarsPadding + padding(bottom = 96.dp) para estar seguro de que quede visible
-            Box(
+            // 2️⃣ Botón fijo inferior (idéntico comportamiento al de 'Enviar respuestas')
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .navigationBarsPadding() // evita solaparse con la nav bar del sistema o la botonera
-                    .padding(horizontal = 16.dp, vertical = 12.dp)
-                    // Nota: si tu BottomNavigation personalizada es más alta aumenta el bottom extra aquí
+                    .navigationBarsPadding()
                     .padding(bottom = 96.dp),
-                contentAlignment = Alignment.Center
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Button(
                     onClick = { navController.navigate("kuder_test") },
-                    shape = RoundedCornerShape(28.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFFFC225),
+                        containerColor = Color.Transparent, // dejamos transparente para mostrar el gradiente
                         contentColor = Color.Black
                     ),
+                    shape = RoundedCornerShape(28.dp),
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp)
+                        .padding(horizontal = 16.dp)
                 ) {
-                    Text("SIGUIENTE", fontWeight = FontWeight.SemiBold)
+                    // Fondo con gradiente
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                brush = Brush.horizontalGradient(
+                                    colors = listOf(Color(0xFFFFC225), Color(0xFFE27131))
+                                ),
+                                shape = RoundedCornerShape(28.dp)
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "SIGUIENTE",
+                            color = Color.White,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
                 }
             }
         }

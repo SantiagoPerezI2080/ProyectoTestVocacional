@@ -25,7 +25,7 @@ private val amarilloAcento = Color(0xFFE27131)
 sealed class BottomNavItem(val route: String, val title: String, val icon: Int) {
     object Home : BottomNavItem("home", "Inicio", com.santiago.pantallastrabajodegrado.R.drawable.icon_house)
     object Test : BottomNavItem("kuder_intro", "Test", com.santiago.pantallastrabajodegrado.R.drawable.icon_testofi)
-    object Carreras : BottomNavItem("carreras", "Carreras", com.santiago.pantallastrabajodegrado.R.drawable.iccon_carrerasofi)
+    object Carreras : BottomNavItem("carreras", "Programas", com.santiago.pantallastrabajodegrado.R.drawable.iccon_carrerasofi)
     object Perfil : BottomNavItem("perfil", "Perfil", com.santiago.pantallastrabajodegrado.R.drawable.icon_perfil)
 }
 
